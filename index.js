@@ -54,6 +54,9 @@ function buildiOS() {
   );
   shell.exec("rm temp/ios/mini_main.jsbundle");
   shell.exec("cd temp/ios && zip -r bundle.zip . && cd ../..");
+  console.log(
+    chalk.bold.greenBright("✅ Completed bundling for iOS 😊")
+  );
 }
 
 function buildAndroid() {
@@ -71,6 +74,9 @@ function buildAndroid() {
   );
   shell.exec("rm temp/android/mini_index.android.bundle");
   shell.exec("cd temp/android && zip -r bundle.zip . && cd ../..");
+  console.log(
+    chalk.bold.greenBright("✅ Completed bundling for android 😊")
+  );
 }
 
 async function getHash(path) {
@@ -82,7 +88,7 @@ async function getHash(path) {
       rs.on("data", (chunk) => hash.update(chunk));
       rs.on("end", () => {
         const result = hash.digest("hex");
-        console.log(chalk.bold.redBright("Hash for " + path + " is " + result));
+        console.log(chalk.bold.yellowBright("Hash for " + path + " is " + result));
         resolve(result);
       });
     } else {
@@ -125,10 +131,10 @@ function createMetadata() {
       metadata: metadata,
     };
     fs.writeFileSync("temp/metadata.json", JSON.stringify(obj));
-    shell.echo(chalk.bold.green("Metadata created successfully"));
+    shell.echo(chalk.bold.green("✅ Metadata created successfully 😊"));
     shell.exec("sh node_modules/hot-update-cli/scripts/copy.sh");
     console.log(
-      chalk.bold.greenBright("Completed building for specified platforms")
+      chalk.bold.greenBright("✅ Completed building for specified platforms 😊")
     );
   });
 }
