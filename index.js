@@ -16,7 +16,8 @@ program
 program.parse();
 
 function build(options) {
-  shell.exec("rm -rf temp");
+  shell.exec("mkdir -p temp/ios");
+  shell.exec("mkdir -p temp/android");
   shell.exec("rm -rf HotUpdate");
   if (options.all) {
     console.log(chalk.bold.green("Building App for all platforms..."));
