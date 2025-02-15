@@ -1,0 +1,21 @@
+{
+  "name": "hot-update-cli",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "hot-update": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ['hotupdate', 'cli', 'hot-update', 'hotupdate-cli', 'hot-update-cli'],
+  "author": "Deepak Pradhan",
+  "license": "ISC",
+  "description": "A cli tool to bundle react native with latest changes",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "shelljs": "^0.8.5"
+  }
+}
