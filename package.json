@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ['hotupdate', 'cli', 'hot-update', 'hotupdate-cli', 'hot-update-cli'],
+  "keywords": ["react-native", "hot-update", "cli", "bundle", "update", "hot-update-cli"],
   "author": "Deepak Pradhan",
   "license": "ISC",
   "description": "A cli tool to bundle react native with latest changes",

@@ -16,6 +16,8 @@ program
 program.parse();
 
 function build(options) {
+  shell.exec("rm -rf temp");
+  shell.exec("rm -rf HotUpdate");
   if (options.all) {
     console.log(chalk.bold.green("Building App for all platforms..."));
     buildiOS();
@@ -40,11 +42,13 @@ function build(options) {
 function buildiOS() {
   console.log(chalk.bold.blueBright("Bundling App for iOS..."));
   shell.exec(
-    "npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output temp/ios/main.jsbundle --assets-dest temp/ios"
+    "npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output temp/ios/main.jsbundle --assets-dest temp/ios",
+    { silent: true }
   );
   shell.exec("mv temp/ios/main.jsbundle temp/ios/mini_main.jsbundle");
   shell.exec(
-    "node_modules/react-native/sdks/hermesc/osx-bin/hermesc -emit-binary -O -out temp/ios/main.jsbundle temp/ios/mini_main.jsbundle"
+    "node_modules/react-native/sdks/hermesc/osx-bin/hermesc -emit-binary -O -out temp/ios/main.jsbundle temp/ios/mini_main.jsbundle",
+    { silent: true }
   );
   shell.exec("rm temp/ios/mini_main.jsbundle");
   shell.exec("cd temp/ios && zip -r bundle.zip . && cd ../..");
@@ -53,13 +57,15 @@ function buildiOS() {
 function buildAndroid() {
   console.log(chalk.bold.blueBright("Bundling App for android..."));
   shell.exec(
-    "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output temp/android/index.android.bundle --assets-dest temp/android"
+    "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output temp/android/index.android.bundle --assets-dest temp/android",
+    { silent: true }
   );
   shell.exec(
     "mv temp/android/index.android.bundle temp/android/mini_index.android.bundle"
   );
   shell.exec(
-    "node_modules/react-native/sdks/hermesc/osx-bin/hermesc -emit-binary -O -out temp/android/index.android.bundle temp/android/mini_index.android.bundle"
+    "node_modules/react-native/sdks/hermesc/osx-bin/hermesc -emit-binary -O -out temp/android/index.android.bundle temp/android/mini_index.android.bundle",
+    { silent: true }
   );
   shell.exec("rm temp/android/mini_index.android.bundle");
   shell.exec("cd temp/android && zip -r bundle.zip . && cd ../..");
@@ -99,15 +105,16 @@ async function getAllHashes() {
     },
   };
   return metadata;
-};
+}
 
 function createMetadata() {
   console.log(chalk.bold.blueBright("Creating metadata..."));
   getAllHashes().then((metadata) => {
-    console.log(chalk.bold.yellowBright("Metadata: ", metadata));
     var date_time = new Date();
     const date =
-      date_time.getDate() < 10 ? "0" + date_time.getDate() : date_time.getDate();
+      date_time.getDate() < 10
+        ? "0" + date_time.getDate()
+        : date_time.getDate();
     const month = date_time.getMonth() + 1;
     const monthStr = month < 10 ? "0" + month : month;
     const version = "" + date_time.getFullYear() + monthStr + date;
@@ -117,8 +124,10 @@ function createMetadata() {
     };
     fs.writeFileSync("temp/metadata.json", JSON.stringify(obj));
     shell.echo(chalk.bold.green("Metadata created successfully"));
-    shell.exec("sh node_modules/hotupdate-cli/scripts/copy.sh");
-    console.log(chalk.bold.greenBright("Completed building for specified platforms"));
+    shell.exec("sh node_modules/hot-update-cli/scripts/copy.sh");
+    console.log(
+      chalk.bold.greenBright("Completed building for specified platforms")
+    );
   });
 }
 
