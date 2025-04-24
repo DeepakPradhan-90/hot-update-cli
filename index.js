@@ -25,17 +25,23 @@ function build(options) {
     buildiOS();
     buildAndroid();
     createMetadata();
-    console.log(chalk.bold.greenBright("Completed building for all platforms"));
+    console.log(
+      chalk.bold.greenBright("✅ Completed building for all platforms 😊")
+    );
   } else if (options.ios) {
     shell.echo(chalk.bold.green("Building App for iOS..."));
     buildiOS();
     createMetadata();
-    console.log(chalk.bold.greenBright("Completed building for iOS"));
+    console.log(
+      chalk.bold.greenBright("✅ Completed building for iOS 😊")
+    );
   } else if (options.android) {
     shell.echo(chalk.bold.green("Building App for Android..."));
     buildAndroid();
     createMetadata();
-    console.log(chalk.bold.greenBright("Completed building for Android"));
+    console.log(
+      chalk.bold.greenBright("✅ Completed building for Android 😊")
+    );
   } else {
     shell.echo(chalk.bold.red("Please specify the platform to build"));
   }
@@ -142,9 +148,6 @@ function createMetadata() {
   fs.writeFileSync("temp/metadata.json", JSON.stringify(obj));
   shell.echo(chalk.bold.green("✅ Metadata created successfully 😊"));
   shell.exec("sh node_modules/hot-update-cli/scripts/copy.sh");
-  console.log(
-    chalk.bold.greenBright("✅ Completed building for specified platforms 😊")
-  );
 }
 
 export default build;
