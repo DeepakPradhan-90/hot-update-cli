@@ -9,12 +9,20 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["react-native", "hot-update", "cli", "bundle", "update", "hot-update-cli"],
+  "keywords": [
+    "react-native",
+    "hot-update",
+    "cli",
+    "bundle",
+    "update",
+    "hot-update-cli"
+  ],
   "author": "Deepak Pradhan",
   "license": "ISC",
   "description": "A cli tool to bundle react native with latest changes",
   "dependencies": {
     "chalk": "^5.4.1",
+    "cli-table": "^0.3.11",
     "commander": "^13.1.0",
     "shelljs": "^0.8.5"
   }

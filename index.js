@@ -4,6 +4,7 @@ import { Option, program } from "commander";
 import shell from "shelljs";
 import crypto from "crypto";
 import fs from "fs";
+import Table from "cli-table";
 
 program
   .command("build")
@@ -32,16 +33,12 @@ function build(options) {
     shell.echo(chalk.bold.green("Building App for iOS..."));
     buildiOS();
     createMetadata();
-    console.log(
-      chalk.bold.greenBright("✅ Completed building for iOS 😊")
-    );
+    console.log(chalk.bold.greenBright("✅ Completed building for iOS 😊"));
   } else if (options.android) {
     shell.echo(chalk.bold.green("Building App for Android..."));
     buildAndroid();
     createMetadata();
-    console.log(
-      chalk.bold.greenBright("✅ Completed building for Android 😊")
-    );
+    console.log(chalk.bold.greenBright("✅ Completed building for Android 😊"));
   } else {
     shell.echo(chalk.bold.red("Please specify the platform to build"));
   }
@@ -103,22 +100,43 @@ async function getHash(path) {
 
 function getAllHashes() {
   console.log(chalk.bold.blueBright("Getting all hashes..."));
-  const iosBundleHash = shell.exec(
-    "shasum -a 256 temp/ios/main.jsbundle | awk '{print $1}'",
-    { silent: true }
-  ).stdout.trim();
-  const iosArchiveHash = shell.exec(
-    "shasum -a 256 temp/ios/bundle.zip | awk '{print $1}'",
-    { silent: true }
-  ).stdout.trim();
-  const androidBundleHash = shell.exec(
-    "shasum -a 256 temp/android/index.android.bundle | awk '{print $1}'",
-    { silent: true }
-  ).stdout.trim();
-  const androidArchiveHash = shell.exec(
-    "shasum -a 256 temp/android/bundle.zip | awk '{print $1}'",
-    { silent: true }
-  ).stdout.trim();
+  const iosBundleHash = shell
+    .exec("shasum -a 256 temp/ios/main.jsbundle | awk '{print $1}'", {
+      silent: true,
+    })
+    .stdout.trim();
+  const iosArchiveHash = shell
+    .exec("shasum -a 256 temp/ios/bundle.zip | awk '{print $1}'", {
+      silent: true,
+    })
+    .stdout.trim();
+  const androidBundleHash = shell
+    .exec(
+      "shasum -a 256 temp/android/index.android.bundle | awk '{print $1}'",
+      { silent: true }
+    )
+    .stdout.trim();
+  const androidArchiveHash = shell
+    .exec("shasum -a 256 temp/android/bundle.zip | awk '{print $1}'", {
+      silent: true,
+    })
+    .stdout.trim();
+
+  // instantiate
+  var table = new Table({
+    head: ["File", "Hash"],
+    colWidths: [30, 67],
+  });
+
+  table.push(
+    ["ios/main.jsbundle", iosBundleHash],
+    ["ios/bundle.zip", iosArchiveHash],
+    ["android/index.android.bundle", androidBundleHash],
+    ["android/bundle.zip", androidArchiveHash]
+  );
+
+  console.log(table.toString());
+
   const metadata = {
     ios: {
       archiveHash: iosArchiveHash,
