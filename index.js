@@ -54,9 +54,7 @@ function buildiOS() {
   );
   shell.exec("rm temp/ios/mini_main.jsbundle");
   shell.exec("cd temp/ios && zip -r bundle.zip . && cd ../..");
-  console.log(
-    chalk.bold.greenBright("✅ Completed bundling for iOS 😊")
-  );
+  console.log(chalk.bold.greenBright("✅ Completed bundling for iOS 😊"));
 }
 
 function buildAndroid() {
@@ -74,9 +72,7 @@ function buildAndroid() {
   );
   shell.exec("rm temp/android/mini_index.android.bundle");
   shell.exec("cd temp/android && zip -r bundle.zip . && cd ../..");
-  console.log(
-    chalk.bold.greenBright("✅ Completed bundling for android 😊")
-  );
+  console.log(chalk.bold.greenBright("✅ Completed bundling for android 😊"));
 }
 
 async function getHash(path) {
@@ -88,7 +84,9 @@ async function getHash(path) {
       rs.on("data", (chunk) => hash.update(chunk));
       rs.on("end", () => {
         const result = hash.digest("hex");
-        console.log(chalk.bold.yellowBright("Hash for " + path + " is " + result));
+        console.log(
+          chalk.bold.yellowBright("Hash for " + path + " is " + result)
+        );
         resolve(result);
       });
     } else {
@@ -97,11 +95,24 @@ async function getHash(path) {
   });
 }
 
-async function getAllHashes() {
-  const iosBundleHash = await getHash("temp/ios/main.jsbundle");
-  const iosArchiveHash = await getHash("temp/ios/bundle.zip");
-  const androidBundleHash = await getHash("temp/android/index.android.bundle");
-  const androidArchiveHash = await getHash("temp/android/bundle.zip");
+function getAllHashes() {
+  console.log(chalk.bold.blueBright("Getting all hashes..."));
+  const iosBundleHash = shell.exec(
+    "shasum -a 256 temp/ios/main.jsbundle | awk '{print $1}'",
+    { silent: true }
+  ).stdout.trim();
+  const iosArchiveHash = shell.exec(
+    "shasum -a 256 temp/ios/bundle.zip | awk '{print $1}'",
+    { silent: true }
+  ).stdout.trim();
+  const androidBundleHash = shell.exec(
+    "shasum -a 256 temp/android/index.android.bundle | awk '{print $1}'",
+    { silent: true }
+  ).stdout.trim();
+  const androidArchiveHash = shell.exec(
+    "shasum -a 256 temp/android/bundle.zip | awk '{print $1}'",
+    { silent: true }
+  ).stdout.trim();
   const metadata = {
     ios: {
       archiveHash: iosArchiveHash,
@@ -117,26 +128,23 @@ async function getAllHashes() {
 
 function createMetadata() {
   console.log(chalk.bold.blueBright("Creating metadata..."));
-  getAllHashes().then((metadata) => {
-    var date_time = new Date();
-    const date =
-      date_time.getDate() < 10
-        ? "0" + date_time.getDate()
-        : date_time.getDate();
-    const month = date_time.getMonth() + 1;
-    const monthStr = month < 10 ? "0" + month : month;
-    const version = "" + date_time.getFullYear() + monthStr + date;
-    const obj = {
-      updateVersion: version,
-      metadata: metadata,
-    };
-    fs.writeFileSync("temp/metadata.json", JSON.stringify(obj));
-    shell.echo(chalk.bold.green("✅ Metadata created successfully 😊"));
-    shell.exec("sh node_modules/hot-update-cli/scripts/copy.sh");
-    console.log(
-      chalk.bold.greenBright("✅ Completed building for specified platforms 😊")
-    );
-  });
+  const metadata = getAllHashes();
+  var date_time = new Date();
+  const date =
+    date_time.getDate() < 10 ? "0" + date_time.getDate() : date_time.getDate();
+  const month = date_time.getMonth() + 1;
+  const monthStr = month < 10 ? "0" + month : month;
+  const version = "" + date_time.getFullYear() + monthStr + date;
+  const obj = {
+    updateVersion: version,
+    metadata: metadata,
+  };
+  fs.writeFileSync("temp/metadata.json", JSON.stringify(obj));
+  shell.echo(chalk.bold.green("✅ Metadata created successfully 😊"));
+  shell.exec("sh node_modules/hot-update-cli/scripts/copy.sh");
+  console.log(
+    chalk.bold.greenBright("✅ Completed building for specified platforms 😊")
+  );
 }
 
 export default build;
