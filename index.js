@@ -101,10 +101,10 @@ async function getHash(path) {
 function getAllHashes() {
   console.log(chalk.bold.blueBright("Getting all hashes..."));
   const iosBundleHash = shell
-    .exec("shasum -a 256 temp/ios/main.jsbundle | awk '{print $1}'", {
+    .exec("shasum -a 256 temp/ios/main.jsbundle", {
       silent: true,
     })
-    .stdout.trim();
+    .stdout.split(" ")[0];
   const iosArchiveHash = shell
     .exec("shasum -a 256 temp/ios/bundle.zip | awk '{print $1}'", {
       silent: true,
